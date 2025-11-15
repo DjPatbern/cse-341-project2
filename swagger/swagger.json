@@ -1,0 +1,254 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Car & Manufacturer API",
+    "version": "1.0.0",
+    "description": "REST API for managing cars and manufacturers."
+  },
+  "servers": [
+    {
+      "url": "${RENDER_URL}",
+      "description": "Production Server (Render)"
+    },
+    {
+      "url": "http://localhost:8080",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/manufacturers": {
+      "get": {
+        "summary": "Get all manufacturers",
+        "tags": ["Manufacturers"],
+        "responses": {
+          "200": {
+            "description": "List of manufacturers"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a manufacturer",
+        "tags": ["Manufacturers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Manufacturer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Manufacturer created"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/manufacturers/{id}": {
+      "get": {
+        "summary": "Get a manufacturer by ID",
+        "tags": ["Manufacturers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Manufacturer found" },
+          "404": { "description": "Manufacturer not found" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "put": {
+        "summary": "Update a manufacturer",
+        "tags": ["Manufacturers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Manufacturer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Manufacturer updated"
+          },
+          "400": {
+            "description": "Missing fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a manufacturer",
+        "tags": ["Manufacturers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          }
+        }
+      }
+    },
+    "/cars": {
+      "get": {
+        "summary": "Get all cars",
+        "tags": ["Cars"],
+        "responses": {
+          "200": {
+            "description": "List of cars"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a car",
+        "tags": ["Cars"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Car"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Car created"
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        }
+      }
+    },
+    "/cars/{id}": {
+      "get": {
+        "summary": "Get a car by ID",
+        "tags": ["Cars"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Car found" },
+          "404": { "description": "Car not found" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "put": {
+        "summary": "Update a car",
+        "tags": ["Cars"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Car"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Car updated"
+          },
+          "400": {
+            "description": "Missing fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a car",
+        "tags": ["Cars"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted successfully"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Manufacturer": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Toyota"
+          },
+          "country": {
+            "type": "string",
+            "example": "Japan"
+          }
+        }
+      },
+      "Car": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "example": "Corolla"
+          },
+          "year": {
+            "type": "number",
+            "example": 2020
+          },
+          "manufacturer": {
+            "type": "string",
+            "example": "6738820cded4de03fb322320"
+          }
+        }
+      }
+    }
+  }
+}
