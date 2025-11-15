@@ -3,13 +3,13 @@
 // ======================================
 
 ### Get all manufacturers
-GET https://cse-341-project1-okn7.onrender.com/manufacturers
+GET https://cse-341-project2-6513.onrender.com/manufacturers
 
 ### Get manufacturer by ID
-GET https://cse-341-project1-okn7.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
+GET https://cse-341-project2-6513.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
 
 ### Create a new manufacturer
-POST https://cse-341-project1-okn7.onrender.com/manufacturers
+POST https://cse-341-project2-6513.onrender.com/manufacturers
 Content-Type: application/json
 
 {
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Update a manufacturer
-PUT https://cse-341-project1-okn7.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
+PUT https://cse-341-project2-6513.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
 Content-Type: application/json
 
 {
@@ -27,16 +27,16 @@ Content-Type: application/json
 }
 
 ### Delete a manufacturer
-DELETE https://cse-341-project1-okn7.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
+DELETE https://cse-341-project2-6513.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
 
 ### Get all cars
-GET https://cse-341-project1-okn7.onrender.com/cars
+GET https://cse-341-project2-6513.onrender.com/cars
 
 ### Get car by ID
-GET https://cse-341-project1-okn7.onrender.com/cars/6918fffefc6602bc1c614979
+GET https://cse-341-project2-6513.onrender.com/cars/6918fffefc6602bc1c614979
 
 ### Create a new car
-POST https://cse-341-project1-okn7.onrender.com/cars
+POST https://cse-341-project2-6513.onrender.com/cars
 Content-Type: application/json
 
 {
@@ -46,7 +46,7 @@ Content-Type: application/json
 }
 
 ### Update a car
-PUT https://cse-341-project1-okn7.onrender.com/cars/6918fffefc6602bc1c614979
+PUT https://cse-341-project2-6513.onrender.com/cars/6918fffefc6602bc1c614979
 Content-Type: application/json
 
 {
@@ -56,7 +56,7 @@ Content-Type: application/json
 }
 
 ### Delete a car
-DELETE https://cse-341-project1-okn7.onrender.com/cars/6918fffefc6602bc1c614979
+DELETE https://cse-341-project2-6513.onrender.com/cars/6918fffefc6602bc1c614979
 
 
 // ======================================
