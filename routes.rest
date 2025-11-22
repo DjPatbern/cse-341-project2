@@ -2,119 +2,112 @@
 // PRODUCTION
 // ======================================
 
-### Get all manufacturers
+### Register (create user)
+POST https://cse-341-project2-6513.onrender.com/auth/register
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "test1234",
+  "displayName": "Tester"
+}
+
+### Login (get token)
+POST https://cse-341-project2-6513.onrender.com/auth/login
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "test1234"
+}
+
+### Get all manufacturers (public)
 GET https://cse-341-project2-6513.onrender.com/manufacturers
 
-### Get manufacturer by ID
-GET https://cse-341-project2-6513.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
-
-### Create a new manufacturer
+### Create manufacturer (protected) — add Authorization header: Bearer <token>
 POST https://cse-341-project2-6513.onrender.com/manufacturers
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "name": "Honda",
-  "country": "Japan"
+  "country": "Japan",
+  "foundedYear": 1948,
+  "ceo": "Toshihiro Mibe",
+  "totalEmployees": 200000,
+  "headquarters": "Tokyo",
+  "website": "https://global.honda"
 }
 
-### Update a manufacturer
-PUT https://cse-341-project2-6513.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
-Content-Type: application/json
-
-{
-  "name": "Toyota",
-  "country": "Japan"
-}
-
-### Delete a manufacturer
-DELETE https://cse-341-project2-6513.onrender.com/manufacturers/6918fd3796fa369ccd36c4e4
-
-### Get all cars
+### Get all cars (public)
 GET https://cse-341-project2-6513.onrender.com/cars
 
-### Get car by ID
-GET https://cse-341-project2-6513.onrender.com/cars/6918fffefc6602bc1c614979
-
-### Create a new car
+### Create car (protected)
 POST https://cse-341-project2-6513.onrender.com/cars
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "model": "Civic",
-  "year": 2022,
-  "manufacturer": "6918fd3796fa369ccd36c4e4"
+  "year": 2023,
+  "price": 23000,
+  "type": "Sedan",
+  "manufacturer": "6918fd3796fa369ccd36c4e4",
+  "fuel": "Petrol",
+  "horsepower": 158
 }
-
-### Update a car
-PUT https://cse-341-project2-6513.onrender.com/cars/6918fffefc6602bc1c614979
-Content-Type: application/json
-
-{
-  "model": "Corolla",
-  "year": 2020,
-  "manufacturer": "6918fd3796fa369ccd36c4e4"
-}
-
-### Delete a car
-DELETE https://cse-341-project2-6513.onrender.com/cars/6918fffefc6602bc1c614979
 
 
 // ======================================
 // LOCALHOST
 // ======================================
 
-### Get all manufacturers
+### Register
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "email": "local@test.com",
+  "password": "localpass",
+  "displayName": "LocalTester"
+}
+
+### Login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "local@test.com",
+  "password": "localpass"
+}
+
+### Get manufacturers
 GET http://localhost:8080/manufacturers
 
-### Get manufacturer by ID
-GET http://localhost:8080/manufacturers/6918fd3796fa369ccd36c4e4
-
-### Create a new manufacturer
+### Create manufacturer (protected)
 POST http://localhost:8080/manufacturers
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "name": "Honda",
+  "name": "Nissan",
   "country": "Japan"
 }
 
-### Update a manufacturer
-PUT http://localhost:8080/manufacturers/6918fd3796fa369ccd36c4e4
-Content-Type: application/json
-
-{
-  "name": "Toyota",
-  "country": "Japan"
-}
-
-### Delete a manufacturer
-DELETE http://localhost:8080/manufacturers/6918fd3796fa369ccd36c4e4
-
-### Get all cars
+### Get cars
 GET http://localhost:8080/cars
 
-### Get car by ID
-GET http://localhost:8080/cars/6918fffefc6602bc1c614979
-
-### Create a new car
+### Create car (protected)
 POST http://localhost:8080/cars
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "model": "Civic",
+  "model": "Altima",
   "year": 2022,
-  "manufacturer": "6918fd3796fa369ccd36c4e4"
+  "price": 24000,
+  "type": "Sedan",
+  "manufacturer": "6918fd3796fa369ccd36c4e4",
+  "fuel": "Petrol",
+  "horsepower": 188
 }
-
-### Update a car
-PUT http://localhost:8080/cars/6918fffefc6602bc1c614979
-Content-Type: application/json
-
-{
-  "model": "Corolla",
-  "year": 2020,
-  "manufacturer": "6918fd3796fa369ccd36c4e4"
-}
-
-### Delete a car
-DELETE http://localhost:8080/cars/6918fffefc6602bc1c614979

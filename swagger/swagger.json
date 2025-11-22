@@ -1,253 +1,237 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Car & Manufacturer API",
+    "title": "Cars & Manufacturers API",
     "version": "1.0.0",
-    "description": "REST API for managing cars and manufacturers."
+    "description": "API for managing cars and manufacturers. JWT authentication with Bearer token."
   },
   "servers": [
     {
-      "url": "${RENDER_URL}",
-      "description": "Production Server (Render)"
-    },
-    {
       "url": "http://localhost:8080",
-      "description": "Local Development Server"
+      "description": "Local server (will be overwritten at runtime)"
     }
   ],
-  "paths": {
-    "/manufacturers": {
-      "get": {
-        "summary": "Get all manufacturers",
-        "tags": ["Manufacturers"],
-        "responses": {
-          "200": {
-            "description": "List of manufacturers"
-          }
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Manufacturer": {
+        "type": "object",
+        "required": ["name", "country"],
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string", "example": "Toyota" },
+          "country": { "type": "string", "example": "Japan" },
+          "foundedYear": { "type": "integer", "example": 1937 },
+          "ceo": { "type": "string", "example": "Koji Sato" },
+          "totalEmployees": { "type": "integer", "example": 360000 },
+          "headquarters": { "type": "string", "example": "Toyota City" },
+          "website": { "type": "string", "example": "https://global.toyota" }
         }
       },
+      "Car": {
+        "type": "object",
+        "required": ["model", "year", "price", "type", "manufacturer", "fuel", "horsepower"],
+        "properties": {
+          "_id": { "type": "string" },
+          "model": { "type": "string", "example": "Corolla" },
+          "year": { "type": "integer", "example": 2020 },
+          "price": { "type": "number", "example": 21000 },
+          "type": { "type": "string", "example": "Sedan" },
+          "manufacturer": { "type": "string", "example": "6918fd3796fa369ccd36c4e4" },
+          "fuel": { "type": "string", "example": "Hybrid" },
+          "horsepower": { "type": "integer", "example": 169 },
+          "mileage": { "type": "number", "example": 15000 }
+        }
+      },
+      "UserRegister": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "example": "user@example.com" },
+          "password": { "type": "string", "example": "strongpassword" },
+          "displayName": { "type": "string", "example": "Victor" }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "example": "user@example.com" },
+          "password": { "type": "string", "example": "strongpassword" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
       "post": {
-        "summary": "Create a manufacturer",
-        "tags": ["Manufacturers"],
+        "summary": "Register new user (local)",
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Manufacturer"
-              }
-            }
+            "application/json": { "schema": { "$ref": "#/components/schemas/UserRegister" } }
           }
         },
         "responses": {
-          "201": {
-            "description": "Manufacturer created"
-          },
-          "400": {
-            "description": "Validation error"
+          "201": { "description": "User created" },
+          "400": { "description": "Validation error" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login (return JWT token)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UserLogin" } }
           }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful (returns token)",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "token": { "type": "string" } } }
+              }
+            }
+          },
+          "400": { "description": "Invalid credentials or validation error" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout (client should discard token)",
+        "responses": { "200": { "description": "Logout OK" } }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Get current user info (requires token)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "User info" },
+          "401": { "description": "Not authenticated" }
+        }
+      }
+    },
+    "/manufacturers": {
+      "get": {
+        "summary": "Get all manufacturers",
+        "responses": {
+          "200": { "description": "List of manufacturers" },
+          "500": { "description": "Server error" }
+        }
+      },
+      "post": {
+        "summary": "Create manufacturer (protected)",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Manufacturer" } } }
+        },
+        "responses": {
+          "201": { "description": "Manufacturer created" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Server error" }
         }
       }
     },
     "/manufacturers/{id}": {
       "get": {
-        "summary": "Get a manufacturer by ID",
-        "tags": ["Manufacturers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
+        "summary": "Get manufacturer by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
         "responses": {
           "200": { "description": "Manufacturer found" },
-          "404": { "description": "Manufacturer not found" },
+          "404": { "description": "Not found" },
           "500": { "description": "Server error" }
         }
       },
       "put": {
-        "summary": "Update a manufacturer",
-        "tags": ["Manufacturers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
+        "summary": "Update manufacturer (protected)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Manufacturer"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Manufacturer" } } }
         },
         "responses": {
-          "200": {
-            "description": "Manufacturer updated"
-          },
-          "400": {
-            "description": "Missing fields"
-          },
-          "500": {
-            "description": "Server error"
-          }
+          "200": { "description": "Updated" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" }
         }
       },
       "delete": {
-        "summary": "Delete a manufacturer",
-        "tags": ["Manufacturers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted successfully"
-          }
-        }
+        "summary": "Delete manufacturer (protected)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Deleted" }, "401": { "description": "Unauthorized" }, "404": { "description": "Not found" } }
       }
     },
     "/cars": {
       "get": {
         "summary": "Get all cars",
-        "tags": ["Cars"],
         "responses": {
-          "200": {
-            "description": "List of cars"
-          }
+          "200": { "description": "List of cars" },
+          "500": { "description": "Server error" }
         }
       },
       "post": {
-        "summary": "Create a car",
-        "tags": ["Cars"],
+        "summary": "Create car (protected)",
+        "security": [{ "BearerAuth": [] }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Car"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Car" } } }
         },
         "responses": {
-          "201": {
-            "description": "Car created"
-          },
-          "400": {
-            "description": "Validation error"
-          }
+          "201": { "description": "Car created" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Server error" }
         }
       }
     },
     "/cars/{id}": {
       "get": {
-        "summary": "Get a car by ID",
-        "tags": ["Cars"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
+        "summary": "Get car by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
         "responses": {
           "200": { "description": "Car found" },
-          "404": { "description": "Car not found" },
+          "404": { "description": "Not found" },
           "500": { "description": "Server error" }
         }
       },
       "put": {
-        "summary": "Update a car",
-        "tags": ["Cars"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
+        "summary": "Update car (protected)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Car"
-              }
-            }
-          }
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Car" } } }
         },
         "responses": {
-          "200": {
-            "description": "Car updated"
-          },
-          "400": {
-            "description": "Missing fields"
-          },
-          "500": {
-            "description": "Server error"
-          }
+          "200": { "description": "Updated" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not found" }
         }
       },
       "delete": {
-        "summary": "Delete a car",
-        "tags": ["Cars"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted successfully"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Manufacturer": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Toyota"
-          },
-          "country": {
-            "type": "string",
-            "example": "Japan"
-          }
-        }
-      },
-      "Car": {
-        "type": "object",
-        "properties": {
-          "model": {
-            "type": "string",
-            "example": "Corolla"
-          },
-          "year": {
-            "type": "number",
-            "example": 2020
-          },
-          "manufacturer": {
-            "type": "string",
-            "example": "6738820cded4de03fb322320"
-          }
-        }
+        "summary": "Delete car (protected)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Deleted" }, "401": { "description": "Unauthorized" }, "404": { "description": "Not found" } }
       }
     }
   }
